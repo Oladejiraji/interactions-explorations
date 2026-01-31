@@ -55,6 +55,8 @@ function SiteIcon({ domain }: { domain: string }) {
 
 const timeOptions = [15, 30, 45, 60];
 
+const colorTransition = { duration: 0.4, ease: [0.4, 0, 0.2, 1] } as const;
+
 const LockIn = () => {
   const [value, setValue] = useState("");
   const [distractions, setDistractions] = useState<DistractionType[]>([]);
@@ -97,71 +99,80 @@ const LockIn = () => {
   const isReady = distractions.length > 0 && selectedTime !== null;
 
   return (
-    <main
-      className={cn(
-        "w-screen h-screen flex justify-center items-center",
-        focusMode ? "bg-[#111111]" : "bg-white",
-      )}
+    <motion.main
+      initial={false}
+      animate={{ backgroundColor: focusMode ? "#111111" : "#ffffff" }}
+      transition={colorTransition}
+      className="w-screen h-screen flex justify-center items-center"
     >
       <div className="relative flex flex-col justify-around h-full">
         <div className="w-80 md:w-100 mx-auto">
           <div className="flex items-center justify-between ">
-            <h1
-              className={cn(
-                "text-sm",
-                focusMode ? "text-[#A0A0A0]" : "text-[#3D3D3D]",
-              )}
+            <motion.h1
+              initial={false}
+              animate={{ color: focusMode ? "#A0A0A0" : "#3D3D3D" }}
+              transition={colorTransition}
+              className="text-sm"
             >
               Lock In
-            </h1>
+            </motion.h1>
           </div>
-          <div
-            className={cn(
-              "px-3 py-6 rounded-[30px] mt-3",
-              focusMode ? "bg-[#1A1A1A]" : "bg-[#FCFCFC]",
-            )}
-            style={{
+          <motion.div
+            initial={false}
+            animate={{
+              backgroundColor: focusMode ? "#1A1A1A" : "#FCFCFC",
               boxShadow: focusMode
                 ? "0px 0px 0px 1px #2A2A2A"
                 : "0px 0px 0px 1px #DEDEDE73",
             }}
+            transition={colorTransition}
+            className="px-3 py-6 rounded-[30px] mt-3"
           >
             <div className="mt-6">
               <motion.div
-                animate={{ x: inputError ? [0, -8, 8, -8, 8, 0] : 0 }}
-                transition={{ duration: 0.4 }}
-                className={cn(
-                  "pr-12 rounded-[12px] relative border-2",
-                  inputError ? "border-red-400" : "border-transparent",
-                  focusMode ? "bg-[#222222]" : "bg-[#F7F7F7]",
-                )}
-                style={{
+                initial={false}
+                animate={{
+                  x: inputError ? [0, -8, 8, -8, 8, 0] : 0,
+                  backgroundColor: focusMode ? "#222222" : "#F7F7F7",
                   boxShadow: focusMode
                     ? "0px 0px 0px 1px #333333"
                     : "0px 0px 0px 1px #EEEEEEE5",
                 }}
+                transition={{
+                  x: { duration: 0.4 },
+                  backgroundColor: colorTransition,
+                  boxShadow: colorTransition,
+                }}
+                className={cn(
+                  "pr-12 rounded-[12px] relative border-2",
+                  inputError ? "border-red-400" : "border-transparent",
+                )}
               >
-                <input
+                <motion.input
                   type="text"
                   value={value}
-                  onChange={(e) => {
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                     setValue(e.target.value);
                     if (inputError) setInputError(false);
                   }}
-                  onKeyDown={(e) => {
+                  onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
                     if (e.key === "Enter") handleAdd();
                   }}
+                  initial={false}
+                  animate={{ color: focusMode ? "#ffffff" : "#000000" }}
+                  transition={colorTransition}
                   placeholder="facebook.com"
                   className={cn(
                     "placeholder:font-medium w-full outline-none py-4 pl-4 bg-transparent",
                     focusMode
-                      ? "text-white placeholder:text-gray-500"
-                      : "text-black placeholder:text-gray-400",
+                      ? "placeholder:text-gray-500"
+                      : "placeholder:text-gray-400",
                   )}
                 />
                 <motion.button
                   whileHover={{ scale: 1.1 }}
                   whileTap={{ scale: 0.9 }}
+                  initial={false}
                   animate={{
                     backgroundColor: inputError
                       ? "#f87171"
@@ -172,7 +183,10 @@ const LockIn = () => {
                           : "#000000",
                     rotate: inputError ? 45 : 0,
                   }}
-                  transition={{ duration: 0.3 }}
+                  transition={{
+                    backgroundColor: colorTransition,
+                    rotate: { duration: 0.3 },
+                  }}
                   className="rounded-full absolute right-0 size-8 flex justify-center items-center mr-2 top-1/2 -translate-y-1/2"
                   onClick={handleAdd}
                 >
@@ -185,12 +199,13 @@ const LockIn = () => {
                         exit={{ opacity: 0, scale: 0.5 }}
                         transition={{ duration: 0.15 }}
                       >
-                        <Check
-                          className={cn(
-                            "size-4",
-                            focusMode ? "text-black" : "text-white",
-                          )}
-                        />
+                        <motion.div
+                          initial={false}
+                          animate={{ color: focusMode ? "#000000" : "#ffffff" }}
+                          transition={colorTransition}
+                        >
+                          <Check className="size-4" />
+                        </motion.div>
                       </motion.span>
                     ) : (
                       <motion.span
@@ -200,12 +215,13 @@ const LockIn = () => {
                         exit={{ opacity: 0, scale: 0.5 }}
                         transition={{ duration: 0.15 }}
                       >
-                        <Plus
-                          className={cn(
-                            "size-4",
-                            focusMode ? "text-black" : "text-white",
-                          )}
-                        />
+                        <motion.div
+                          initial={false}
+                          animate={{ color: focusMode ? "#000000" : "#ffffff" }}
+                          transition={colorTransition}
+                        >
+                          <Plus className="size-4" />
+                        </motion.div>
                       </motion.span>
                     )}
                   </AnimatePresence>
@@ -216,32 +232,44 @@ const LockIn = () => {
             {distractions.length === 0 ? (
               <div className="h-8 mt-3" />
             ) : (
-              <div
-                className={cn(
-                  "flex w-fit max-w-full rounded-full overflow-x-auto scrollbar-hide mt-3 p-0.5",
-                  focusMode ? "bg-[#222222]" : "bg-[#F7F7F7]",
-                )}
+              <motion.div
+                initial={false}
+                animate={{ backgroundColor: focusMode ? "#222222" : "#F7F7F7" }}
+                transition={colorTransition}
+                className="flex w-fit max-w-full rounded-full overflow-x-auto scrollbar-hide mt-3 p-0.5"
               >
                 <AnimatePresence>
                   {distractions.map((distraction) => (
                     <motion.div
                       key={distraction.name}
-                      initial={{ opacity: 0, scale: 0.8 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      exit={{ opacity: 0, scale: 0.8 }}
-                      transition={{ duration: 0.2 }}
-                      layout
-                      className={cn(
-                        "px-3 py-1.5 h-7 rounded-full font-medium text-xs flex items-center gap-1.5",
-                        focusMode
-                          ? "bg-[#2A2A2A] text-[#C0C0C0]"
-                          : "bg-white text-[#3D3D3D]",
-                      )}
-                      style={{
+                      initial={{
+                        opacity: 0,
+                        scale: 0.8,
+                        backgroundColor: focusMode ? "#2A2A2A" : "#ffffff",
+                        color: focusMode ? "#C0C0C0" : "#3D3D3D",
                         boxShadow: focusMode
                           ? "0px 0px 0px 1px #333333"
                           : "0px 0px 0px 1px #EEEEEEE5",
                       }}
+                      animate={{
+                        opacity: 1,
+                        scale: 1,
+                        backgroundColor: focusMode ? "#2A2A2A" : "#ffffff",
+                        color: focusMode ? "#C0C0C0" : "#3D3D3D",
+                        boxShadow: focusMode
+                          ? "0px 0px 0px 1px #333333"
+                          : "0px 0px 0px 1px #EEEEEEE5",
+                      }}
+                      exit={{ opacity: 0, scale: 0.8 }}
+                      transition={{
+                        opacity: { duration: 0.2 },
+                        scale: { duration: 0.2 },
+                        backgroundColor: colorTransition,
+                        color: colorTransition,
+                        boxShadow: colorTransition,
+                      }}
+                      layout
+                      className="px-3 py-1.5 h-7 rounded-full font-medium text-xs flex items-center gap-1.5"
                     >
                       <SiteIcon domain={distraction.name} />
                       <span>{distraction.name}</span>
@@ -262,14 +290,17 @@ const LockIn = () => {
                     </motion.div>
                   ))}
                 </AnimatePresence>
-              </div>
+              </motion.div>
             )}
 
             <div className="flex-1 flex flex-col justify-center items-center gap-0">
-              <h1
+              <motion.h1
+                initial={false}
+                animate={{ color: focusMode ? "#ffffff" : "#000000" }}
+                transition={colorTransition}
                 className={cn(
                   "text-center text-[60px] md:text-[96px] font-medium leading-[0.9] letter-spacing-[-2px]",
-                  focusMode ? "text-white" : "text-black py-6",
+                  !focusMode && "py-6",
                 )}
               >
                 {focusMode ? (
@@ -284,28 +315,28 @@ const LockIn = () => {
                 ) : (
                   <>{selectedTime ?? 15}m</>
                 )}
-              </h1>
+              </motion.h1>
             </div>
 
-            <div
-              className={cn(
-                "p-0.5 rounded-full flex items-center justify-center max-w-[245px] mx-auto",
-                focusMode ? "bg-[#222222]" : "bg-[#F7F7F7]",
-              )}
-              style={{
+            <motion.div
+              initial={false}
+              animate={{
+                backgroundColor: focusMode ? "#222222" : "#F7F7F7",
                 boxShadow: focusMode
                   ? "0px 0px 0px 1px #333333"
                   : "0px 0px 0px 1px #EEEEEEB2",
               }}
+              transition={colorTransition}
+              className="p-0.5 rounded-full flex items-center justify-center max-w-[245px] mx-auto"
             >
               {timeOptions.map((time, index) => (
-                <button
+                <motion.button
                   onClick={() => setSelectedTime(time)}
                   key={index}
-                  className={cn(
-                    "w-15 h-9 rounded-full font-medium cursor-pointer text-xs relative",
-                    focusMode ? "text-white" : "text-black",
-                  )}
+                  initial={false}
+                  animate={{ color: focusMode ? "#ffffff" : "#000000" }}
+                  transition={colorTransition}
+                  className="w-15 h-9 rounded-full font-medium cursor-pointer text-xs relative"
                 >
                   <span
                     className={cn("relative z-1", {
@@ -317,23 +348,25 @@ const LockIn = () => {
                   {selectedTime === time ? (
                     <motion.span
                       layoutId="option-highlight"
-                      className={cn(
-                        "absolute inset-0 rounded-full",
-                        focusMode ? "bg-[#333333]" : "bg-white",
-                      )}
+                      initial={false}
+                      animate={{
+                        backgroundColor: focusMode ? "#333333" : "#ffffff",
+                      }}
+                      transition={colorTransition}
+                      className="absolute inset-0 rounded-full"
                     />
                   ) : null}
-                </button>
+                </motion.button>
               ))}
-            </div>
-            <p
-              className={cn(
-                "text-xs text-center opacity-40 mt-2",
-                focusMode ? "text-[#666666]" : "text-black",
-              )}
+            </motion.div>
+            <motion.p
+              initial={false}
+              animate={{ color: focusMode ? "#666666" : "#000000" }}
+              transition={colorTransition}
+              className="text-xs text-center opacity-40 mt-2"
             >
               You can always change the time
-            </p>
+            </motion.p>
 
             <div className="mt-17.75">
               {focusMode ? (
@@ -366,14 +399,14 @@ const LockIn = () => {
                 </motion.button>
               )}
             </div>
-          </div>
+          </motion.div>
         </div>
 
-        <div
-          className={cn(
-            "opacity-40 text-xs font-medium flex items-center justify-between",
-            focusMode ? "text-white" : "text-black",
-          )}
+        <motion.div
+          initial={false}
+          animate={{ color: focusMode ? "#ffffff" : "#000000" }}
+          transition={colorTransition}
+          className="opacity-40 text-xs font-medium flex items-center justify-between"
         >
           <p>
             Made by
@@ -386,9 +419,9 @@ const LockIn = () => {
             </Link>
           </p>
           <p>A chrome extension</p>
-        </div>
+        </motion.div>
       </div>
-    </main>
+    </motion.main>
   );
 };
 
