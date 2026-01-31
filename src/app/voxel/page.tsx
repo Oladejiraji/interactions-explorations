@@ -1,35 +1,96 @@
 "use client";
 
-import React, { Fragment, useEffect, useRef } from "react";
+import React, { Fragment, useEffect, useRef, useState } from "react";
+import { motion, useMotionValue, useSpring } from "motion/react";
 
 const rowNo = 16;
 const colNo = 12;
 
 const faceCoordinates = [
-  // Left eye
+  // Antennae
+  "1,5",
+  "1,10",
+  "2,6",
+  "2,9",
+
+  // Head
+  "3,4",
+  "3,5",
+  "3,6",
+  "3,7",
+  "3,8",
+  "3,9",
+  "3,10",
+  "3,11",
+
+  // Eyes row (gaps at 5,10 for eyes)
+  "4,3",
+  "4,4",
+  "4,6",
+  "4,7",
+  "4,8",
+  "4,9",
+  "4,11",
+  "4,12",
+
+  // Body
+  "5,2",
+  "5,3",
   "5,4",
-  "6,4",
   "5,5",
-  "6,5",
-
-  // Right eye
-  "10,4",
-  "11,4",
-  "10,5",
-  "11,5",
-
-  // Smile (curved)
+  "5,6",
+  "5,7",
+  "5,8",
   "5,9",
+  "5,10",
+  "5,11",
+  "5,12",
+  "5,13",
+
+  // Lower body
+  "6,2",
+  "6,4",
+  "6,5",
+  "6,6",
+  "6,7",
+  "6,8",
+  "6,9",
   "6,10",
-  "7,10",
+  "6,11",
+  "6,13",
+
+  // Arms
+  "7,2",
+  "7,4",
+  "7,11",
+  "7,13",
+
+  // Feet
+  "8,5",
+  "8,6",
+  "8,9",
   "8,10",
-  "9,10",
-  "10,10",
-  "11,9",
 ];
 
 const Voxel = () => {
   const gridRef = useRef<HTMLDivElement>(null);
+  const [activeCell, setActiveCell] = useState<`${string},${string}` | null>(
+    null,
+  );
+
+  const mouseX = useMotionValue(-100);
+  const mouseY = useMotionValue(-100);
+  const springX = useSpring(mouseX, { damping: 25, stiffness: 200 });
+  const springY = useSpring(mouseY, { damping: 25, stiffness: 200 });
+
+  useEffect(() => {
+    const handleGlobalMouseMove = (e: MouseEvent) => {
+      mouseX.set(e.clientX - 16);
+      mouseY.set(e.clientY - 16);
+    };
+    window.addEventListener("mousemove", handleGlobalMouseMove);
+    return () => window.removeEventListener("mousemove", handleGlobalMouseMove);
+  }, [mouseX, mouseY]);
 
   useEffect(() => {
     const cellSize = 28; // size-7 = 28px
@@ -47,14 +108,23 @@ const Voxel = () => {
       const row = Math.floor(y / step);
 
       if (col >= 0 && col < rowNo && row >= 0 && row < colNo) {
-        console.log("Hovered cell:", { col, row, key: `${col},${row}` });
+        setActiveCell(`${row},${col}`);
+        // console.log("Hovered cell:", { col, row, key: `${col},${row}` });
       }
     };
 
+    const handleMouseLeave = () => {
+      setTimeout(() => {
+        setActiveCell(null);
+      }, 400);
+    };
+
     gridRef.current?.addEventListener("mousemove", handleMouseMove);
+    gridRef.current?.addEventListener("mouseleave", handleMouseLeave);
 
     return () => {
       gridRef.current?.removeEventListener("mousemove", handleMouseMove);
+      gridRef.current?.removeEventListener("mouseleave", handleMouseLeave);
     };
   }, []);
 
@@ -67,12 +137,20 @@ const Voxel = () => {
             override.
           </h3>
           <div className="mt-3 flex items-center gap-2">
-            <button className="px-4 py-1.5 bg-[#E1FF55] text-black rounded-full text-xs font-medium">
+            <motion.button
+              className="px-4 py-1.5 bg-[#E1FF55] text-black rounded-full text-xs font-medium cursor-pointer"
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.97 }}
+            >
               System.Config
-            </button>
-            <button className="px-4 py-1.5 bg-white text-black rounded-full text-xs font-medium">
+            </motion.button>
+            <motion.button
+              className="px-4 py-1.5 bg-white text-black rounded-full text-xs font-medium"
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.97 }}
+            >
               Override
-            </button>
+            </motion.button>
           </div>
         </div>
 
@@ -83,18 +161,64 @@ const Voxel = () => {
                 <Fragment key={rowIndex}>
                   {new Array(rowNo).fill(null).map((_, colIndex) => {
                     const isFacePart = faceCoordinates.includes(
-                      `${colIndex},${rowIndex}`,
+                      `${rowIndex},${colIndex}`,
                     );
+
+                    const radius = 3;
+                    const affectedCells: string[] = [];
+                    for (let dr = -radius; dr <= radius; dr++) {
+                      for (let dc = -radius; dc <= radius; dc++) {
+                        const r = rowIndex + dr;
+                        const c = colIndex + dc;
+                        if (r >= 0 && c >= 0) {
+                          affectedCells.push(`${r},${c}`);
+                        }
+                      }
+                    }
+
+                    const currCell = `${rowIndex}-${colIndex}`;
+
+                    const activeRowIndex = activeCell?.split(",")[0];
+                    const activeColumnIndex = activeCell?.split(",")[1];
+
+                    const difference =
+                      Math.abs(Number(rowIndex) - Number(activeRowIndex)) +
+                      Math.abs(Number(colIndex) - Number(activeColumnIndex));
+
+                    const maxDist = radius * 2;
+                    const currScale =
+                      0.5 + (0.5 * Math.min(difference, maxDist)) / maxDist;
+
+                    const isParticipantCell =
+                      activeCell && affectedCells.includes(activeCell);
+
+                    const edgeDist = Math.min(
+                      rowIndex,
+                      colIndex,
+                      colNo - 1 - rowIndex,
+                      rowNo - 1 - colIndex,
+                    );
+                    const edgeMax = 3;
+                    const edgeFactor = Math.min(edgeDist, edgeMax) / edgeMax;
+                    const darkCellBrightness = isParticipantCell
+                      ? Math.round(10 + 16 * edgeFactor)
+                      : 26;
+
                     return (
-                      <div
-                        key={`${rowIndex}-${colIndex}`}
+                      <motion.div
+                        key={currCell}
                         className="size-7 "
-                        style={{
+                        animate={{
+                          scale: isParticipantCell ? currScale : 1,
                           backgroundColor: isFacePart
                             ? "rgb(255, 255, 255)"
-                            : "rgb(26, 26, 26)",
+                            : `rgb(${darkCellBrightness}, ${darkCellBrightness}, ${darkCellBrightness})`,
                         }}
-                      />
+                        transition={{
+                          duration: 0.3,
+                          // delay: isParticipantCell ? difference * 0.04 : 0,
+                        }}
+                      ></motion.div>
                     );
                   })}
                 </Fragment>
@@ -109,11 +233,19 @@ const Voxel = () => {
             <p className="">Awaiting input stream.</p>
             <p className="">Grid ready.</p>
           </div>
-          <button className="px-4 py-1.5 bg-transparent text-white rounded-full text-xs font-medium border border-[#333]">
+          <motion.button
+            className="px-4 py-1.5 bg-transparent text-white rounded-full text-xs font-medium border border-[#333] cursor-pointer"
+            whileHover={{ scale: 1.02, borderColor: "#fff" }}
+            whileTap={{ scale: 0.97 }}
+          >
             Execute Render
-          </button>
+          </motion.button>
         </div>
       </div>
+      <motion.div
+        className="pointer-events-none fixed top-0 left-0 size-6 rounded-full border border-white/40 bg-[#E1FF55] mix-blend-difference"
+        style={{ x: springX, y: springY }}
+      />
     </main>
   );
 };
