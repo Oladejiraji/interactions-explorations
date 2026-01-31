@@ -257,7 +257,7 @@ const LockIn = () => {
                           )
                         }
                       >
-                        <X className="size-2 " />
+                        <X className="size-3 " />
                       </motion.button>
                     </motion.div>
                   ))}
@@ -269,15 +269,21 @@ const LockIn = () => {
               <h1
                 className={cn(
                   "text-center text-[60px] md:text-[96px] font-medium leading-[0.9] letter-spacing-[-2px]",
-                  focusMode ? "text-white" : "text-black",
+                  focusMode ? "text-white" : "text-black py-6",
                 )}
               >
-                <NumberFlow value={Math.floor(remaining / 60)} />
-                :
-                <NumberFlow
-                  value={remaining % 60}
-                  format={{ minimumIntegerDigits: 2 }}
-                />
+                {focusMode ? (
+                  <>
+                    <NumberFlow value={Math.floor(remaining / 60)} />
+                    :
+                    <NumberFlow
+                      value={remaining % 60}
+                      format={{ minimumIntegerDigits: 2 }}
+                    />
+                  </>
+                ) : (
+                  <>{selectedTime ?? 15}m</>
+                )}
               </h1>
             </div>
 
