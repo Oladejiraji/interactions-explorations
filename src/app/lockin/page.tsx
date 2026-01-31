@@ -140,9 +140,9 @@ const LockIn = () => {
               backdropFilter: focusMode ? "blur(4px)" : "blur(0px)",
             }}
             transition={colorTransition}
-            className="px-3 pt-6 pb-4 rounded-[30px] mt-3"
+            className="px-4 pt-6 pb-4 rounded-[30px] mt-3"
           >
-            <div className="mt-6">
+            <div className="">
               {focusMode ? (
                 <div
                   className="rounded-[12px] bg-[#705559] flex items-center gap-2 py-3.5 px-4"
@@ -504,7 +504,7 @@ const LockIn = () => {
                 <motion.button
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.97 }}
-                  className="text-sm md:text-base text-black transition-all bg-white p-4 rounded-[12px] w-full font-medium cursor-pointer"
+                  className="text-sm md:text-base text-black transition-all bg-white px-4 py-3 rounded-[12px] w-full font-medium cursor-pointer"
                   onClick={() => setFocusMode(false)}
                   style={{
                     boxShadow: "0px 0px 0px 1px #EEEEEEE5",
@@ -517,7 +517,7 @@ const LockIn = () => {
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.97 }}
                   className={cn(
-                    "text-sm md:text-base text-white transition-all bg-black p-4 rounded-[12px] w-full font-medium cursor-pointer",
+                    "text-sm md:text-base text-white transition-all bg-black px-4 py-3 rounded-[12px] w-full font-medium cursor-pointer",
                     { "bg-[#E9E9E9] text-[#A4A4A4]": !isReady },
                   )}
                   onClick={() => setFocusMode(true)}
