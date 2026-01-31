@@ -1,103 +1,173 @@
+"use client";
+import { PlusIcon, RightIcon } from "@/components/icons";
+import { cn } from "@/lib/utils";
+import { Plus } from "lucide-react";
 import Image from "next/image";
+import { useState, useRef, useEffect } from "react";
+
+interface MessageType {
+  id: number;
+  text: string;
+  createdAt: Date;
+  system: "user" | "bot";
+}
 
 export default function Home() {
-  return (
-    <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="font-mono list-inside list-decimal text-sm/6 text-center sm:text-left">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] font-mono font-semibold px-1 py-0.5 rounded">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+  const [messages, setMessages] = useState<Array<MessageType>>([]);
+  const [inputValue, setInputValue] = useState("");
+  const [isBotLoading, setIsBotLoading] = useState(false);
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
+
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages]);
+
+  // Auto-resize textarea based on content
+  useEffect(() => {
+    const textarea = textareaRef.current;
+    if (textarea) {
+      textarea.style.height = "auto";
+      textarea.style.height = `${textarea.scrollHeight}px`;
+    }
+  }, [inputValue]);
+
+  const handleSendMessage = (e?: React.FormEvent) => {
+    e?.preventDefault();
+
+    if (!inputValue.trim() || isBotLoading) return;
+
+    // Add user message
+    const userMessage: MessageType = {
+      id: Date.now(),
+      text: inputValue,
+      createdAt: new Date(),
+      system: "user",
+    };
+
+    setMessages((prev) => [...prev, userMessage]);
+    setInputValue("");
+    setIsBotLoading(true);
+
+    // Add loading message
+    const loadingMessageId = Date.now() + 1;
+    const loadingMessage: MessageType = {
+      id: loadingMessageId,
+      text: "...",
+      createdAt: new Date(),
+      system: "bot",
+    };
+    setMessages((prev) => [...prev, loadingMessage]);
+
+    // Simulate bot response after a delay
+    setTimeout(() => {
+      setMessages((prev) =>
+        prev.map((msg) =>
+          msg.id === loadingMessageId
+            ? {
+                ...msg,
+                text: "Thanks for your message! I'm here to help you with that.",
+                createdAt: new Date(),
+              }
+            : msg
+        )
+      );
+      setIsBotLoading(false);
+    }, 1000);
+  };
+
+  return (
+    <div className="w-screen h-screen bg-[#333] flex justify-center items-center">
+      <div className="w-[400px] h-[670px] bg-white flex flex-col">
+        <div className="bg-[#4D484512] w-full h-15 mb-8 flex justify-center items-center py-2.5">
+          <div className="bg-white w-[125px] h-full rounded-full" />
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+        <div className="flex-1 overflow-y-auto flex flex-col px-5 ">
+          <div className="flex-1 min-h-0"></div>
+          <div className="flex flex-col gap-2">
+            {messages.map((message) => {
+              const isLastMessage =
+                messages[messages.length - 1].id === message.id;
+              return (
+                <div
+                  key={message.id}
+                  className={cn("flex flex-col", {
+                    "self-end items-end": message.system === "user",
+                    "self-start items-start": message.system === "bot",
+                  })}
+                >
+                  {isBotLoading && message.system === "bot" && isLastMessage ? (
+                    <div className="pb-2">
+                      <p className="text-xs text-[#C3C3C5]">Analyaing</p>
+                    </div>
+                  ) : null}
+                  <div></div>
+                  <div className="bg-[#F1F1F1] px-3 py-2 w-fit rounded-2xl">
+                    <p className="text-[#333333] text-xs">{message.text}</p>
+                  </div>
+                  <p className="text-xs text-[#C3C3C5] pt-1 text-[8px]">
+                    <span className="font-medium">Read</span>{" "}
+                    {message.createdAt.toLocaleTimeString([], {
+                      hour: "2-digit",
+                      minute: "2-digit",
+                    })}
+                  </p>
+                </div>
+              );
+            })}
+            <div ref={messagesEndRef} />
+          </div>
+        </div>
+        <div className="px-5 pb-8 mt-4 w-full">
+          <form
+            onSubmit={handleSendMessage}
+            className="w-full h-full flex items-end gap-2"
+          >
+            <div className="bg-[#F1F1F1] rounded-full mb-2 size-8 flex justify-center items-center">
+              <PlusIcon />
+            </div>
+            <div className="flex-1 relative">
+              <textarea
+                ref={textareaRef}
+                value={inputValue}
+                onChange={(e) => setInputValue(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" && !e.shiftKey) {
+                    e.preventDefault();
+                    handleSendMessage();
+                  }
+                }}
+                disabled={isBotLoading}
+                className="rounded-2xl bg-[#F1F1F1] pr-10 w-full px-3 py-2.5 placeholder:text-[#C3C3C5] text-[#404040] placeholder:text-xs text-xs outline-none disabled:opacity-50 disabled:cursor-not-allowed resize-none overflow-hidden min-h-[36px] max-h-[120px]"
+                placeholder="Your message..."
+                rows={1}
+              />
+
+              <div
+                className={cn(
+                  "absolute right-[6px] top-1/2 -translate-y-1/2 transition-all rounded-xl duration-200 h-9 p-3",
+                  {
+                    "bg-white shadow-[0px_1px_2px_0px_#82828240]": inputValue.trim().length > 0,
+                  }
+                )}
+              >
+                <div
+                  className={cn("transition-transform duration-200", {
+                    "-rotate-90": inputValue.trim().length > 0,
+                  })}
+                >
+                  <RightIcon className="size-2.5" pathClassName="" />
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
     </div>
   );
 }
