@@ -104,7 +104,7 @@ const LockIn = () => {
       )}
     >
       <div className="relative flex flex-col justify-around h-full">
-        <div className="w-80 md:w-120 mx-auto">
+        <div className="w-80 md:w-100 mx-auto">
           <div className="flex items-center justify-between ">
             <h1
               className={cn(
@@ -218,7 +218,7 @@ const LockIn = () => {
             ) : (
               <div
                 className={cn(
-                  "flex rounded-full w-fit content-start overflow-x-auto mt-3 p-0.5",
+                  "flex w-fit max-w-full rounded-full overflow-x-auto scrollbar-hide mt-3 p-0.5",
                   focusMode ? "bg-[#222222]" : "bg-[#F7F7F7]",
                 )}
               >
