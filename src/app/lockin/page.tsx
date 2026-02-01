@@ -102,12 +102,14 @@ const LockIn = () => {
   const isReady = distractions.length > 0 && selectedTime !== null;
   return (
     <main className="w-screen h-screen flex justify-center items-center relative">
-      <div
-        className="absolute bottom-0 left-1/2 -translate-x-1/2 z-1"
-        aria-hidden
-      >
-        <Image src={blob} width={429} height={429} alt="background blob" />
-      </div>
+      {focusMode ? (
+        <div
+          className="absolute bottom-0 left-1/2 -translate-x-1/2 z-1"
+          aria-hidden
+        >
+          <Image src={blob} width={429} height={429} alt="background blob" />
+        </div>
+      ) : null}
       <div
         aria-hidden
         className="absolute inset-0"
