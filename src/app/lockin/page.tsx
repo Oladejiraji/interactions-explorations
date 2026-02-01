@@ -5,7 +5,7 @@ import { Check, Globe, Plus, X } from "lucide-react";
 import React, { Fragment, useEffect, useState } from "react";
 import NumberFlow from "@number-flow/react";
 import { AnimatePresence, motion, useAnimate } from "motion/react";
-import { Meta, X as XIcon, reddit } from "@/lib/assets";
+import { Meta, X as XIcon, blob, reddit } from "@/lib/assets";
 import Image, { StaticImageData } from "next/image";
 import Link from "next/link";
 import { BellIcon, Pause, Play as PlayIcon, Restart } from "@/lib/svgs";
@@ -103,6 +103,12 @@ const LockIn = () => {
   return (
     <main className="w-screen h-screen flex justify-center items-center relative">
       <div
+        className="absolute bottom-0 left-1/2 -translate-x-1/2 z-1"
+        aria-hidden
+      >
+        <Image src={blob} width={429} height={429} alt="background blob" />
+      </div>
+      <div
         aria-hidden
         className="absolute inset-0"
         style={{ backgroundColor: "#ffffff" }}
@@ -118,7 +124,7 @@ const LockIn = () => {
             "linear-gradient(180deg, #DEAA93 -10.03%, #B18180 17.75%, #6D6382 46.79%, #384258 78.36%, #111B28 116.24%)",
         }}
       />
-      <div className="relative flex flex-col justify-around h-full">
+      <div className="relative z-2 flex flex-col justify-around h-full">
         <div className="w-80 md:w-100 mx-auto">
           <div className="flex items-center justify-between ">
             <motion.h1
@@ -537,7 +543,7 @@ const LockIn = () => {
           initial={false}
           animate={{ color: focusMode ? "#ffffff" : "#000000" }}
           transition={colorTransition}
-          className="opacity-40 text-xs font-medium flex items-center justify-between"
+          className="opacity-40 text-xs font-medium flex items-center justify-between "
         >
           <p>
             Made by
