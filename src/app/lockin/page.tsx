@@ -323,20 +323,22 @@ const LockIn = () => {
                       >
                         {distraction.name}
                       </span>
-                      <motion.button
-                        whileHover={{ scale: 1.2 }}
-                        whileTap={{ scale: 0.8 }}
-                        className=""
-                        onClick={() =>
-                          setDistractions(
-                            distractions.filter(
-                              (d) => d.name !== distraction.name,
-                            ),
-                          )
-                        }
-                      >
-                        <X className="size-3 " />
-                      </motion.button>
+                      {!focusMode ? (
+                        <motion.button
+                          whileHover={{ scale: 1.2 }}
+                          whileTap={{ scale: 0.8 }}
+                          className=""
+                          onClick={() =>
+                            setDistractions(
+                              distractions.filter(
+                                (d) => d.name !== distraction.name,
+                              ),
+                            )
+                          }
+                        >
+                          <X className="size-3 " />
+                        </motion.button>
+                      ) : null}
                     </motion.div>
                   ))}
                 </AnimatePresence>
@@ -349,7 +351,7 @@ const LockIn = () => {
                 animate={{ color: focusMode ? "#ffffff" : "#000000" }}
                 transition={colorTransition}
                 className={cn(
-                  "text-center text-[60px] md:text-[96px] font-medium leading-[0.9] letter-spacing-[-2px]",
+                  "text-center text-[60px] md:text-[96px] font-medium leading-[0.9] letter-spacing-[-2px] tabular-nums",
                   !focusMode && "py-6",
                 )}
               >
