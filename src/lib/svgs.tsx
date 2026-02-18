@@ -69,3 +69,33 @@ export const BellIcon = () => (
     ></path>
   </svg>
 );
+
+export const DotIcon = () => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="4"
+    height="4"
+    fill="none"
+    viewBox="0 0 4 4"
+  >
+    <rect width="4" height="4" fill="#D2D2D2" rx="2"></rect>
+  </svg>
+);
+
+export const MicIcon = () => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="11"
+    height="14"
+    fill="none"
+    viewBox="0 0 11 14"
+  >
+    <path
+      fill="#414141"
+      fillOpacity="0.5"
+      fillRule="evenodd"
+      d="M10 6.673a.667.667 0 0 1 .566.755 5.336 5.336 0 0 1-4.613 4.53v.709a.667.667 0 0 1-1.334 0v-.708A5.34 5.34 0 0 1 .007 7.428a.667.667 0 0 1 1.32-.19 4.001 4.001 0 0 0 7.918 0A.667.667 0 0 1 10 6.674M5.285 0A3.333 3.333 0 0 1 8.62 3.333v3.334a3.333 3.333 0 1 1-6.666 0V3.333A3.333 3.333 0 0 1 5.286 0m0 1.333a2 2 0 0 0-2 2v3.334a2 2 0 1 0 4 0V3.333a2 2 0 0 0-2-2"
+      clipRule="evenodd"
+    ></path>
+  </svg>
+);

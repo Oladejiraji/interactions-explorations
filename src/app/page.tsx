@@ -21,6 +21,71 @@ const experiments = [
     title: "Distractions",
     description: "Domain blocker with timer functionality",
   },
+  {
+    slug: "anchor-learn",
+    title: "Anchor Popover",
+    description: "Popover tooltip using HTML anchor positioning API",
+  },
+  {
+    slug: "anchor-tabs",
+    title: "Anchor Tabs",
+    description: "Animated tab navigation with anchor-positioned background",
+  },
+  {
+    slug: "brush",
+    title: "Brush Drawing",
+    description: "Animated pen-drawn sketch animation from image data",
+  },
+  {
+    slug: "copy",
+    title: "Copy Toolbar",
+    description: "Interactive toolbar with copy and highlight actions",
+  },
+  {
+    slug: "dashboard",
+    title: "Dashboard UI",
+    description: "Full-featured analytics dashboard with sidebar and table",
+  },
+  {
+    slug: "device",
+    title: "Device Orientation",
+    description: "Real-time device orientation sensor data visualization",
+  },
+  {
+    slug: "dropdown",
+    title: "Gooey Dropdown",
+    description: "Morphing gooey dropdown menu with SVG filter effect",
+  },
+  {
+    slug: "glare",
+    title: "Depth Parallax",
+    description: "WebGL depth-map parallax effect with mouse tracking",
+  },
+  {
+    slug: "music",
+    title: "Music Player",
+    description: "Music player interface with album artwork display",
+  },
+  {
+    slug: "perspective",
+    title: "Perspective Shift",
+    description: "WebGL depth-based perspective shift on mouse movement",
+  },
+  {
+    slug: "pricing",
+    title: "Pricing Page",
+    description: "Pricing page component with plan cards",
+  },
+  {
+    slug: "record",
+    title: "Audio Recorder",
+    description: "Real-time audio recording with frequency visualization",
+  },
+  {
+    slug: "three-voxel",
+    title: "3D Voxel Grid",
+    description: "3D voxel grid with wave and rotation animations",
+  },
 ];
 
 export default function Home() {

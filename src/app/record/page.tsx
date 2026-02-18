@@ -1,6 +1,6 @@
 "use client";
 import React, { useRef, useState, useCallback, useEffect } from "react";
-import { motion } from "motion/react";
+import { AnimatePresence, motion } from "motion/react";
 
 const BAR_COUNT = 30;
 const FFT_SIZE = 64;
@@ -150,9 +150,18 @@ const Record = () => {
             <div
               className={`size-2 rounded-full ${statusColor} ${recordingState === "recording" ? "animate-pulse" : ""}`}
             />
-            <h3 className="uppercase text-[#6B7280] font-semibold text-xs">
-              {statusText}
-            </h3>
+            <AnimatePresence mode="wait">
+              <motion.h3
+                key={statusText}
+                initial={{ opacity: 0, y: 6, filter: "blur(3px)" }}
+                animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+                exit={{ opacity: 0, y: 6, filter: "blur(3px)" }}
+                transition={{ duration: 0.25 }}
+                className="uppercase text-[#6B7280] font-semibold text-xs"
+              >
+                {statusText}
+              </motion.h3>
+            </AnimatePresence>
           </div>
 
           <div>
@@ -162,12 +171,26 @@ const Record = () => {
           </div>
 
           <div className="my-7.5 relative h-25 flex items-center justify-center">
-            <div className="absolute top-0 left-0 w-full h-full">
-              <div className="absolute top-0 left-0 rounded-tl-sm border-t-2 border-l-2 size-4 border-black" />
-              <div className="absolute top-0 right-0 rounded-tr-sm border-t-2 border-r-2 size-4 border-black" />
-              <div className="absolute bottom-0 left-0 rounded-bl-sm border-b-2 border-l-2 size-4 border-black" />
-              <div className="absolute bottom-0 right-0 rounded-br-sm border-b-2 border-r-2 size-4 border-black" />
-            </div>
+            <motion.div
+              className="absolute top-0 left-0 w-full h-full"
+              animate={{
+                scale: recordingState === "recording" ? 0.92 : 1,
+              }}
+              transition={{ type: "spring", stiffness: 400, damping: 25 }}
+            >
+              <div
+                className={`absolute top-0 left-0 rounded-tl-sm border-t-2 border-l-2 size-4 transition-colors duration-300 ${recordingState === "recording" ? "border-[#C9D83A]" : "border-black"}`}
+              />
+              <div
+                className={`absolute top-0 right-0 rounded-tr-sm border-t-2 border-r-2 size-4 transition-colors duration-300 ${recordingState === "recording" ? "border-[#C9D83A]" : "border-black"}`}
+              />
+              <div
+                className={`absolute bottom-0 left-0 rounded-bl-sm border-b-2 border-l-2 size-4 transition-colors duration-300 ${recordingState === "recording" ? "border-[#C9D83A]" : "border-black"}`}
+              />
+              <div
+                className={`absolute bottom-0 right-0 rounded-br-sm border-b-2 border-r-2 size-4 transition-colors duration-300 ${recordingState === "recording" ? "border-[#C9D83A]" : "border-black"}`}
+              />
+            </motion.div>
             <div className="flex gap-1 items-center justify-center h-20">
               {barHeights.map((height, i) => (
                 <div
@@ -181,7 +204,7 @@ const Record = () => {
             </div>
           </div>
 
-          <div className="border-t border-[#F3F4F6] pt-6 my-7.5 flex justify-between items-center">
+          <div className="border-t border-[#F3F4F6] pt-6 mt-7.5 flex justify-between items-center">
             <div className="text-xs">
               <p className="text-[#666666] pb-1">Microphone Input</p>
               <p className="text-black font-semibold">{micLabel}</p>
@@ -196,7 +219,7 @@ const Record = () => {
                 onClick={handleToggle}
                 animate={{
                   backgroundColor:
-                    recordingState === "recording" ? "#E8F24C" : "#000",
+                    recordingState === "recording" ? "#C9D83A" : "#000",
                 }}
                 className="rounded-full flex items-center justify-center cursor-pointer size-16"
               >
