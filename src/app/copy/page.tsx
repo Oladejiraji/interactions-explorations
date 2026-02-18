@@ -59,7 +59,7 @@ const ToolbarButton = ({
               exit="exit"
               transition={{ type: "spring", duration: 0.3, bounce: 0.5 }}
             >
-              <DoneIcon size={20} />
+              {/* <DoneIcon size={20} /> */}
             </motion.span>
           ) : (
             <motion.span
@@ -71,7 +71,7 @@ const ToolbarButton = ({
               exit="exit"
               transition={{ type: "spring", duration: 0.3, bounce: 0.5 }}
             >
-              <Icon size={20} />
+              {/* <Icon size={20} /> */}
             </motion.span>
           )}
         </AnimatePresence>
