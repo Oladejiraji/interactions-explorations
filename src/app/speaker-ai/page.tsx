@@ -23,19 +23,18 @@ const ORBIT_DELAY = SCALE_DURATION + SPREAD_DURATION;
 const allMessages = [
   {
     id: 1,
-    text: "With the plane selected: Right panel \u2192 Modifiers (wrench icon) Add Modifier \u2192 Geometry Nodes Click New Switch to Geometry Nodes workspace at the top.",
+    text: "How do I get a smooth gradient noise effect in a fragment shader without it looking blocky?",
     user: true,
   },
   {
     id: 2,
-    text: "Before instancing. Take: Noise \u2192 Multiply (small value like 0.3) \u2192 plug into Set Position Offset. This distorts the grid before rotation, giving that squeezed organic feel.",
+    text: "Use a simplex or perlin noise function and sample it with scaled UV coordinates. Multiply the output by a smoothstep to fade the edges, then mix between two colors using the noise value as the blend factor. Bump up the octaves for finer detail.",
     user: false,
   },
 ];
 
 const TIMINGS = {
-  idleToListening: 2000,
-  listeningToWriting: 4000,
+  listeningToWriting: 6000,
   writingToProcessing: 2000,
   processingToDone: 5000,
 };
@@ -147,13 +146,6 @@ const SpeakerAi = () => {
   const [gooeyClosing, setGooeyClosing] = useState(false);
 
   useEffect(() => {
-    if (chatState === "idle") {
-      const timer = setTimeout(
-        () => setChatState("listening"),
-        TIMINGS.idleToListening,
-      );
-      return () => clearTimeout(timer);
-    }
     if (chatState === "listening") {
       const timer = setTimeout(
         () => setChatState("writing"),
@@ -247,7 +239,10 @@ const SpeakerAi = () => {
                   duration: chatState === "done" ? 0.4 : SCALE_DURATION,
                   ease: cubicBezier(0.35, 0.17, 0.3, 0.86),
                 }}
-                className="relative z-10"
+                className="relative z-10 cursor-pointer"
+                onClick={() => {
+                  if (chatState === "idle") setChatState("listening");
+                }}
               >
                 <Image src={Gradient} alt="gradient" width={64} height={64} />
               </motion.div>
@@ -262,7 +257,7 @@ const SpeakerAi = () => {
               transition={{ duration: 0.3 }}
               className="text-[#D2D2D2] text-sm font-medium tracking-[-0.0056em] text-center min-h-5"
             >
-              {chatState === "idle" && "Speak to activate"}
+              {chatState === "idle" && "Tap to speak"}
               {chatState === "listening" && "Listening..."}
               {chatState === "processing" && "Thinking..."}
             </motion.h1>
