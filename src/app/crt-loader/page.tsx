@@ -112,8 +112,13 @@ const Content = () => {
 };
 
 export default function CrtPage() {
-  const midPoint = window.innerHeight / 2 - 8;
-  const carretWidth = window.innerWidth * 0.01;
+  const [midPoint, setMidPoint] = useState(0);
+  const [carretWidth, setCarretWidth] = useState(0);
+
+  useEffect(() => {
+    setMidPoint(window.innerHeight / 2 - 8);
+    setCarretWidth(window.innerWidth * 0.01);
+  }, []);
 
   const [displayText, setDisplayText] = useState("");
   const [typingDone, setTypingDone] = useState(false);
