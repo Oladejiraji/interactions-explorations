@@ -202,10 +202,10 @@ function useStaticNoise(active: boolean) {
 
 export default function Page() {
   const videoRef = useRef<HTMLVideoElement | null>(null);
-  const isPlayingRef = useRef(true);
+  const isPlayingRef = useRef(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
-  const [isPlaying, setIsPlaying] = useState(true);
+  const [isPlaying, setIsPlaying] = useState(false);
   const [isSeeking, setIsSeeking] = useState(false);
   const [isRewinding, setIsRewinding] = useState(false);
   const [isForwarding, setIsForwarding] = useState(false);
