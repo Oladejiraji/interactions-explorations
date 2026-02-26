@@ -18,3 +18,7 @@ A Next.js repo for building interactive UI experiments.
 - Animation: Motion library for 2D, R3F for 3D
 - Linting/formatting: Biome (`pnpm lint` / `pnpm format`)
 - Each experiment lives in its own route under `src/app/`
+
+## Notes
+
+- Most explorations on this site are independent. Each page contains a separate exploration so don't check other files for patterns unless explicictly asked

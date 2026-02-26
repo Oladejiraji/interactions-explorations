@@ -106,7 +106,7 @@ const GooeyLoaderLg = () => {
                 // whileTap={{ scale: 0.9 }}
                 onClick={() => setStatus("loading")}
               >
-                <Plus className="text-white size-6" />
+                {/* <Plus className="text-white size-6" /> */}
               </motion.button>
             )}
             {status === "done" && (
@@ -119,7 +119,7 @@ const GooeyLoaderLg = () => {
                   animate={{ opacity: 1, scale: 1 }}
                   transition={{ duration: 0.3, ease: "easeOut" }}
                 >
-                  <Check className="text-white size-6" />
+                  {/* <Check className="text-white size-6" /> */}
                 </motion.div>
               </motion.div>
             )}
