@@ -20,6 +20,11 @@ import Button1 from "../../public/buttons/button1.png";
 import Button2 from "../../public/buttons/button2.png";
 import Button3 from "../../public/buttons/button3.png";
 
+import PanelImage1 from "../../public/panels/image1.png";
+import PanelImage2 from "../../public/panels/image2.png";
+import PanelImage3 from "../../public/panels/image3.png";
+import PanelImage4 from "../../public/panels/image4.png";
+
 export {
   Meta,
   X,
@@ -38,4 +43,8 @@ export {
   Button1,
   Button2,
   Button3,
+  PanelImage1,
+  PanelImage2,
+  PanelImage3,
+  PanelImage4,
 };
