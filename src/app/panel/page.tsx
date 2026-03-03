@@ -124,7 +124,7 @@ const Panel = () => {
                       }
                     }}
                   >
-                    <div className="flex items-center overflow-hidden">
+                    <div className="flex items-center overflow-hidden h-3">
                       {isCollapsed ? (
                         <>
                           <motion.span
