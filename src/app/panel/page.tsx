@@ -14,28 +14,28 @@ import {
 const initialNotifications = [
   {
     id: 1,
-    name: "Sarah Chen",
+    name: "Raji Oladeji",
     message: "Pushed 3 commits to main",
     time: "2m ago",
     image: PanelImage1,
   },
   {
     id: 2,
-    name: "Alex Rivera",
+    name: "Kurosawa",
     message: "Commented on your PR ",
     time: "15m ago",
     image: PanelImage2,
   },
   {
     id: 3,
-    name: "Jordan Lee",
+    name: "Miles Keown",
     message: "Requested a review ",
     time: "1h ago",
     image: PanelImage3,
   },
   {
     id: 4,
-    name: "Maya Patel",
+    name: "Previous Leon",
     message: "Merged branch ",
     time: "3h ago",
     image: PanelImage4,
