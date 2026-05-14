@@ -1,5 +1,5 @@
 "use client";
-import React, { useMemo, useRef, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { motion } from "motion/react";
 
 interface IUnit {
@@ -22,6 +22,109 @@ function Unit(props: IUnit) {
 export default function Page() {
   const containerRef = useRef<HTMLDivElement>(null);
   const [relativePosition, setRelativePosition] = useState({ x: 0, y: 0 });
+  const audioCtxRef = useRef<AudioContext | null>(null);
+  const prevBarIndexRef = useRef<number>(-1);
+
+  const getAudioContext = useCallback(() => {
+    if (!audioCtxRef.current) {
+      audioCtxRef.current = new AudioContext();
+    }
+    return audioCtxRef.current;
+  }, []);
+
+  // "sineTick" — short sine blip, pitch varies with bar height
+  const sineTick = useCallback(
+    (barHeight: number) => {
+      const ctx = getAudioContext();
+      const now = ctx.currentTime;
+
+      const oscillator = ctx.createOscillator();
+      const gain = ctx.createGain();
+
+      oscillator.type = "sine";
+      oscillator.frequency.setValueAtTime(1000 + barHeight * 200, now);
+
+      const volume = 0.06 + barHeight * 0.04;
+      gain.gain.setValueAtTime(volume, now);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.03);
+
+      oscillator.connect(gain);
+      gain.connect(ctx.destination);
+
+      oscillator.start(now);
+      oscillator.stop(now + 0.03);
+    },
+    [getAudioContext],
+  );
+
+  // "noiseBurst" — white noise pop, feels more like a vinyl crackle
+  const noiseBurst = useCallback(
+    (barHeight: number) => {
+      const ctx = getAudioContext();
+      const now = ctx.currentTime;
+      const duration = 0.015 + barHeight * 0.01;
+
+      const bufferSize = Math.ceil(ctx.sampleRate * duration);
+      const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+      const channelData = buffer.getChannelData(0);
+      for (let i = 0; i < bufferSize; i++) {
+        channelData[i] = (Math.random() * 2 - 1) * (1 - i / bufferSize);
+      }
+
+      const source = ctx.createBufferSource();
+      source.buffer = buffer;
+
+      const gain = ctx.createGain();
+      const volume = 0.08 + barHeight * 0.05;
+      gain.gain.setValueAtTime(volume, now);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + duration);
+
+      const filter = ctx.createBiquadFilter();
+      filter.type = "highpass";
+      filter.frequency.setValueAtTime(800 + barHeight * 400, now);
+
+      source.connect(filter);
+      filter.connect(gain);
+      gain.connect(ctx.destination);
+
+      source.start(now);
+      source.stop(now + duration);
+    },
+    [getAudioContext],
+  );
+
+  // "squareClick" — sharp square wave click (from circle exploration)
+  const squareClick = useCallback(
+    (_barHeight: number) => {
+      const ctx = getAudioContext();
+      const now = ctx.currentTime;
+      const oscillator = ctx.createOscillator();
+      const gain = ctx.createGain();
+      oscillator.connect(gain);
+      gain.connect(ctx.destination);
+      oscillator.type = "square";
+      oscillator.frequency.setValueAtTime(1800, now);
+      gain.gain.setValueAtTime(0.03, now);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.03);
+      oscillator.start(now);
+      oscillator.stop(now + 0.03);
+    },
+    [getAudioContext],
+  );
+
+  const sounds = useMemo(
+    () => ({ sineTick, noiseBurst, squareClick }) as Record<string, (h: number) => void>,
+    [sineTick, noiseBurst, squareClick],
+  );
+  const soundNames = ["sineTick", "noiseBurst", "squareClick"] as const;
+  const [activeSound, setActiveSound] = useState<string>("squareClick");
+  const playTick = sounds[activeSound];
+
+  useEffect(() => {
+    return () => {
+      audioCtxRef.current?.close();
+    };
+  }, []);
 
   const data = useMemo(() => {
     const arr: number[] = [];
@@ -61,7 +164,15 @@ export default function Page() {
 
       const x = e.clientX - rect.left;
       const y = e.clientY - rect.top;
-      setRelativePosition({ x: Math.min(Math.max(x, 0), rect.width), y });
+      const clampedX = Math.min(Math.max(x, 0), rect.width);
+
+      const barIndex = Math.floor((clampedX / rect.width) * data.length);
+      if (barIndex !== prevBarIndexRef.current && barIndex >= 0 && barIndex < data.length) {
+        playTick(data[barIndex]);
+        prevBarIndexRef.current = barIndex;
+      }
+
+      setRelativePosition({ x: clampedX, y });
     }
   };
 
@@ -114,6 +225,21 @@ export default function Page() {
             ease: "linear",
           }}
         ></motion.div>
+      </div>
+      <div className="flex gap-2 mt-4">
+        {soundNames.map((name) => (
+          <button
+            key={name}
+            onClick={() => setActiveSound(name)}
+            className={`px-3 py-1 text-xs rounded-full transition-colors ${
+              activeSound === name
+                ? "bg-black text-white"
+                : "bg-[#e8e8e8] text-black hover:bg-[#d4d4d4]"
+            }`}
+          >
+            {name}
+          </button>
+        ))}
       </div>
     </div>
   );
